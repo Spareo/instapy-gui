@@ -2,7 +2,7 @@ version: '3'
 services:
   config:
     build: ./services/config
-    image: felixbreuer/instapy-config:latest
+    image: docker.dmitryk.io/instapy-config:1.0.0
     restart: unless-stopped
     ports:
       - 4002:80
@@ -10,45 +10,76 @@ services:
       - ./services/config:/usr/instapy
     environment:
       - MODE=development
-      - MONGO_URL
-      - JWT_SECRET
-      - CIPHER_SECRET
+      - MONGO_URL=mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017
+      - JWT_SECRET=6MrgWDeoYiW3nHHgZ
+      - CIPHER_SECRET=''
     depends_on:
       - mongo
   auth:
     build: ./services/auth
-    image: felixbreuer/instapy-auth:latest
+    image: docker.dmitryk.io/instapy-auth:1.0.0
     command: ['npm', 'run', 'dev']
     restart: unless-stopped
-    volumes:
-      - ./services/auth:/usr/instapy
+    # volumes:
+    #   - ./services/auth:/usr/instapy
     ports:
       - 4001:80
     environment:
-      - MONGO_URL
-      - JWT_SECRET
+      - MONGO_URL='mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017'
+      - JWT_SECRET=6MrgWDeoYiW3nHHgZ
     depends_on:
       - mongo
   socket:
     build: ./services/socket
-    image: felixbreuer/instapy-socket:latest
+    image: docker.dmitryk.io/instapy-socket:1.0.0
     command: ['npm', 'run', 'dev']
     restart: unless-stopped
     ports:
       - 4005:80
-    volumes:
-      - ./services/socket:/usr/instapy
+    # volumes:
+    #   - ./services/socket:/usr/instapy
     environment:
-      - JWT_SECRET
+      - MONGO_URL=mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017
+      - JWT_SECRET=6MrgWDeoYiW3nHHgZ
     depends_on:
       - mongo
+  # actions:
+  #   build: ./services/actions
+  #   image: docker.dmitryk.io/instapy-actions:latest
+  #   restart: unless-stopped
+  #   environment:
+  #     - MONGO_URL=mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017
+  #   depends_on:
+  #     - mongo
   mongo:
-    image: mongo
+    build: ./services/mongo
+    image: mongo:latest
     restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=w4xgnk6NjG9TfcpCK
     volumes:
-      - ./dev/mongo:/data/db
+      - ./dev/mongo/db:/data/db
     ports:
       - 27017:27017
-  instapy:
-    build: ./services/instapy
-    image: felixbreuer/instapy-client:latest
+  gui:
+    build: ./services/gui
+    image: docker.dmitryk.io/instapy-gui:1.0.1
+    environment:
+      - AUTH_ENDPOINT=http://auth
+      - CONFIG_ENDPOINT=http://config
+      - SOCKET_ENDPOINT=http://socket
+      - GA_TRACKING_ID="NA"
+    ports:
+      - 9999:8080
+  # instapy:
+  #   build: ./services/instapy
+  #   image: docker.dmitryk.io/instapy-client:latest
+  #   environment:
+  #     - AUTH_ENDPOINT=
+  #     - CONFIG_ENDPOINT=
+  #     - SOCKET_ENDPOINT=
+  #     - IDENT=
+  #     - INSTAPY_WORKSPACE=
+  #     - INSTAPY_USER=
+  #     - INSTAPY_PASSWORD=
