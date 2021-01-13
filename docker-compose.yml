@@ -1,23 +1,8 @@
 version: '3'
 services:
-  config:
-    build: ./services/config
-    image: docker.dmitryk.io/instapy-config:1.0.0
-    restart: unless-stopped
-    ports:
-      - 4002:80
-    volumes:
-      - ./services/config:/usr/instapy
-    environment:
-      - MODE=development
-      - MONGO_URL=mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017
-      - JWT_SECRET=6MrgWDeoYiW3nHHgZ
-      - CIPHER_SECRET=''
-    depends_on:
-      - mongo
   auth:
     build: ./services/auth
-    image: docker.dmitryk.io/instapy-auth:1.0.0
+    image: docker.dmitryk.io/instapy-auth:1.0.3
     command: ['npm', 'run', 'dev']
     restart: unless-stopped
     # volumes:
@@ -29,13 +14,28 @@ services:
       - JWT_SECRET=6MrgWDeoYiW3nHHgZ
     depends_on:
       - mongo
+  config:
+    build: ./services/config
+    image: docker.dmitryk.io/instapy-config:1.0.3
+    restart: unless-stopped
+    ports:
+      - 4002:80
+    # volumes:
+    #   - ./services/config:/usr/instapy
+    environment:
+      - MODE=development
+      - MONGO_URL=mongodb://root:w4xgnk6NjG9TfcpCK@mongo:27017
+      - JWT_SECRET=6MrgWDeoYiW3nHHgZ
+      - CIPHER_SECRET=''
+    depends_on:
+      - mongo
   socket:
     build: ./services/socket
-    image: docker.dmitryk.io/instapy-socket:1.0.0
+    image: docker.dmitryk.io/instapy-socket:1.0.3
     command: ['npm', 'run', 'dev']
     restart: unless-stopped
     ports:
-      - 4005:80
+      - 4003:80
     # volumes:
     #   - ./services/socket:/usr/instapy
     environment:
@@ -53,7 +53,7 @@ services:
   #     - mongo
   mongo:
     build: ./services/mongo
-    image: mongo:latest
+    image: docker.dmitryk.io/mongo:1.0.3
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -64,22 +64,25 @@ services:
       - 27017:27017
   gui:
     build: ./services/gui
-    image: docker.dmitryk.io/instapy-gui:1.0.1
+    image: docker.dmitryk.io/instapy-gui:1.0.3
+    environment:
+      - ENV_FILE=.env
+      - PORT=80
+    volumes:
+      - ./.env:/site/.env
+    ports:
+      - 8080:80
+  instapy:
+    build: ./services/instapy
+    image: docker.dmitryk.io/instapy-client:1.0.3
     environment:
       - AUTH_ENDPOINT=http://auth
       - CONFIG_ENDPOINT=http://config
-      - SOCKET_ENDPOINT=http://socket
-      - GA_TRACKING_ID="NA"
-    ports:
-      - 9999:8080
-  # instapy:
-  #   build: ./services/instapy
-  #   image: docker.dmitryk.io/instapy-client:latest
-  #   environment:
-  #     - AUTH_ENDPOINT=
-  #     - CONFIG_ENDPOINT=
-  #     - SOCKET_ENDPOINT=
-  #     - IDENT=
-  #     - INSTAPY_WORKSPACE=
-  #     - INSTAPY_USER=
-  #     - INSTAPY_PASSWORD=
+      - SOCKET_ENDPOINT=ws://socket
+      - IDENT=wickry1
+      - INSTAPY_USER=test
+      - INSTAPY_PASSWORD=abcde12345
+    depends_on:
+      - mongo
+      - auth
+      - config

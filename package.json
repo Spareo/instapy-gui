@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "npm run lint",
 		"start": "webpack-dev-server --open --config webpack.dev.config.js",
-		"start:docker": "npm run start",
+		"start:docker": "webpack-dev-server --config webpack.docker.config.js",
 		"start:local": "ENV_FILE=.env npm run start",
 		"build": "webpack --config webpack.prod.config.js",
 		"lint": "eslint --config .eslintrc.yml --ext jsx --ext js src",

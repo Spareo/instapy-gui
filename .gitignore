@@ -34,3 +34,4 @@ assets
 
 # misc
 **/build-docker.sh
+.python-version

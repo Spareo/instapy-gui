@@ -5,6 +5,9 @@ import requests
 import json
 import platform
 import signal
+import schedule
+import random
+import time
 from os import getenv
 from websocket import create_connection
 from instapy import InstaPy, set_workspace
@@ -128,9 +131,12 @@ session = InstaPy(**instapy_args)
 def exit_browser(*args):
     session.browser.quit()
 
-
 if platform.system() != 'Windows':
     signal.signal(signal.SIGUSR1, exit_browser)
+
+# Configure run loop on random schedule timer
+is_first_run = True
+
 
 with smart_run(session):
     for job in jobs:

@@ -20,6 +20,11 @@ CONFIG_ENDPOINT = os.getenv('CONFIG_ENDPOINT', 'https://config.instapy.io')
 SOCKET_ENDPOINT = os.getenv('SOCKET_ENDPOINT', 'wss://socket.instapy.io')
 IDENT = os.getenv('IDENT')
 
+print("AUTH_ENDPOINT: %s" % AUTH_ENDPOINT)
+print("CONFIG_ENDPOINT: %s" % CONFIG_ENDPOINT)
+print("SOCKET_ENDPOINT: %s" % SOCKET_ENDPOINT)
+print("IDENT: %s" % IDENT)
+
 if not IDENT:
     print('IDENT not provided')
     sys.exit(1)
@@ -59,6 +64,7 @@ def on_open(ws):
 
 def get_token(username, password):
     payload = {'username': username, 'password': password}
+    print(payload)
 
     url = AUTH_ENDPOINT + '/login'
     print(f'authenticate {username} to {url} ...')

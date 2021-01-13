@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from dotenv import load_dotenv
+from pymongo import database
 load_dotenv()
 
 def fix_jobs_namespaces():
@@ -53,17 +54,20 @@ def diff_actions():
 
                             break
 
-from database import client
+from database import client, init_db
 from insta import get_actions
 
 if __name__ == '__main__':
     table = client.configuration.actions
+    #init_db()
+    diff_actions()
 
-    # table.create_index('functionName', unique = True, background = True)
+    
+    table.create_index('functionName', unique = True, background = True)
 
-    # update actions
-    # for action in get_actions():
-        # table.replace_one({'functionName': action['functionName']}, action, upsert=True)
+    #update actions
+    for action in get_actions():
+        table.replace_one({'functionName': action['functionName']}, action, upsert=True)
 
     client.close()
     #print('added actions to mongodb')

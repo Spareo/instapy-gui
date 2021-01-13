@@ -2,8 +2,8 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from os import getenv
 
-url = getenv('MONGO_URL') or 'mongodb://localhost:27017'
-
+#url = getenv('MONGO_URL') or 'mongodb://localhost:27017'
+url = "mongodb://root:w4xgnk6NjG9TfcpCK@192.168.7.39:27017"
 client = MongoClient(url)
 
 
@@ -11,7 +11,7 @@ def init_db():
     db = client['configuration']
 
     # create index
-    # db.templates.create_index('ident', unique = True, background = True)
+    #db.templates.create_index('ident', unique = True, background = True)
 
     init_quickstart_hashtag(db.templates)
     init_quickstart_follower(db.templates)

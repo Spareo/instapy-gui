@@ -2,3 +2,6 @@ instapy
 websocket-client
 requests
 python-dotenv
+selenium
+pyvirtualdisplay
+schedule
