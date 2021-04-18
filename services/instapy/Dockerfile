@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 ARG APP_AUTH_ENDPOINT
 ARG APP_CONFIG_ENDPOINT

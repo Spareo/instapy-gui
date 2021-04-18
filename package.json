@@ -1,7 +1,7 @@
 {
 	"name": "instapy-gui",
 	"productName": "InstaPy GUI",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "GUI for InstaPy automation",
 	"main": "src/index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"start": "webpack-dev-server --open --config webpack.dev.config.js",
 		"start:docker": "webpack-dev-server --config webpack.docker.config.js",
 		"start:local": "ENV_FILE=.env npm run start",
-		"build": "webpack --config webpack.prod.config.js",
+		"build": "webpack --config webpack.prod.config.js && cp public/*.png dist",
 		"lint": "eslint --config .eslintrc.yml --ext jsx --ext js src",
 		"black": "black -S services",
 		"lint:fix": "npm run lint -- --fix",
